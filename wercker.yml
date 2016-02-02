@@ -2,14 +2,6 @@ box: amutake/ssreflect@0.0.3
 build:
   steps:
     - script:
-        name: dependencies
-        code: |
-          git clone git@github.com:math-classes/math-classes.git
-          cd math-classes
-          ./configure.sh
-          make
-          make install
-    - script:
         name: build
         code: |
           ./configure

@@ -15,7 +15,6 @@ Requirements
 
 - Coq 8.4pl6
 - Ssreflect 1.5
-- [math-classes](https://github.com/math-classes/math-classes)
 
 Install
 -------

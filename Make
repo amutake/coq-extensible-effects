@@ -1,0 +1,6 @@
+-R theories eff
+
+theories/monad.v
+theories/union.v
+theories/taseq.v
+theories/eff.v

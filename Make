@@ -1,4 +1,4 @@
--R theories eff
+-R theories Eff
 
 theories/monad.v
 theories/union.v

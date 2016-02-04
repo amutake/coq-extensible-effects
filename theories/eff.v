@@ -6,31 +6,6 @@ Require Import Coq.Program.Wf Coq.Classes.SetoidClass Coq.Logic.FunctionalExtens
 
 Require Import taseq monad union.
 
-(**
- * We want to define like below, but it cannot compile
-Inductive arrows (R : list (Type -> Type)) : Type -> Type -> Type :=
-| Leaf : forall {A B}, (A -> eff R B) -> arrows R A B
-| Node : forall {A B C}, arrows R A B -> arrows R B C -> arrows R A C
-with eff (R : list (Type -> Type)) (A : Type) : Type :=
-| Pure : A -> eff R A
-| Impure : forall {X}, union R X -> arrows R X A -> eff R A.
-(* => parameters should be syntactically the same for each inductive type *)
- * ok, switch to the below. this can compile.
-Inductive arrows (R : list (Type -> Type)) : Type -> Type -> Type :=
-| Leaf : forall {A B}, (A -> eff R B) -> arrows R A B
-| Node : forall {A B C}, arrows R A B -> arrows R B C -> arrows R A C
-with eff (R : list (Type -> Type)) : Type -> Type :=
-| Pure : forall A, A -> eff R A
-| Impure : forall {A X}, union R X -> arrows R X A -> eff R A.
- * but there is a defect in this `eff` definition
-Definition foo {R} {A B} (e : eff R A) (f : A -> eff R B) :=
-  match e with
-  | Pure _ a => f a             (* => `a` does not have type A *)
-  | ...
- *
- * To avoid mutual inductive definition, we define arrows parameterized by F
- *)
-
 Inductive Eff (R : list (Type -> Type)) (A : Type) : Type :=
 | Pure : A -> Eff R A
 | Impure : forall {X}, Union R X -> SnocNel (Eff R) X A -> Eff R A.
@@ -78,9 +53,8 @@ Section EqArrs.
   Qed.
 
   Axiom arrs_ext : forall f g, f == g -> f = g.
-  (* It is impossible to prove (arrs |> eff_pure == arrs) because
-   * if tapp arrs a = Impure u q Impure _ (q *)
-  (* What axiom to prove (arrs |> eff_pure == arrs) ? *)
+  (* It is impossible to prove (arrs |> eff_pure == arrs) *)
+  (* What axiom to be able to prove (arrs |> eff_pure == arrs) ? *)
 End EqArrs.
 
 Section EffMonad.

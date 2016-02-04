@@ -67,7 +67,26 @@ Section EffMonad.
     end.
 
   Existing Instance arrs_setoid.
-  (* apply (enq arrs f) = f (apply arrs) *)
+
+  Lemma enq_pure_pure :
+    forall R A,
+      SOne (Eff R) (@eff_pure R A) |> eff_pure == (SOne _ eff_pure).
+  Proof.
+    move=> R A a.
+    by compute.
+  Qed.
+
+  Lemma enq_f_pure :
+    forall R A (f : A -> Eff R A),
+      SOne _ f |> eff_pure == SOne _ f.
+  Proof.
+    move=> R A f a.
+    compute.
+    case H : (f a); first done.
+    congr (_ _).
+    admit.                      (* impossible *)
+  Qed.
+
   Lemma enq_pure :
     forall R A B (arrs : Arrs R A B),
       arrs |> eff_pure == arrs.
@@ -81,7 +100,7 @@ Section EffMonad.
         rewrite H.
         congr (_ _).
         apply arrs_ext.
-        admit.
+        admit.                  (* impossible *)
     - admit.
   Qed.
 
@@ -89,7 +108,15 @@ Section EffMonad.
     forall R A B C D (arrs : Arrs R A B) (k : B -> Eff R C) (h : C -> Eff R D),
       arrs |> (fun a => eff_bind (k a) h) == arrs |> k |> h.
   Proof.
-    admit.
+    move=> R A B C D; elim=> //=.
+    - move=> X f k h a.
+      case H : (f a)=> [ x | X' u s ].
+      + compute; rewrite H.
+        by case H' : (k x).
+      + compute; rewrite H.
+        congr (_ _).
+        admit.                  (* impossible *)
+    - admit.
   Qed.
 
   Program Instance eff_is_monad (R : list (Type -> Type)) : Monad (Eff R) := {
